@@ -21,6 +21,7 @@
     "react-game-kit": "^0.0.2",
     "redux": "^3.7.2",
     "redux-act": "^1.3.0",
+    "redux-logger": "^3.0.6",
     "webpack": "^3.4.1",
     "webpack-dev-server": "^2.6.1"
   },

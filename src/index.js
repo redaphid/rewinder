@@ -1,6 +1,9 @@
-import {createStore} from 'redux'
-import reducer from './reducers'
-import renderer from './renderer'
+import {createStore, applyMiddleware} from 'redux'
+import logger from 'redux-logger'
 
-renderer.start()
-const store = createStore(reducer)
+import reducer from './reducers'
+import {initialize} from './actions'
+
+const store = createStore(reducer, applyMiddleware(logger))
+
+store.dispatch(initialize())
