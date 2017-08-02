@@ -1,7 +1,7 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var path              = require('path');
 var webpack           = require('webpack');
-
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
   devtool: 'source-map',
   entry: [
@@ -24,7 +24,10 @@ module.exports = {
       template: path.join(__dirname, 'index.html'),
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin(),
+    new CopyWebpackPlugin([
+        { from: 'node_modules/pixi.js/dist' }
+    ])
   ],
   module: {
     rules: [
