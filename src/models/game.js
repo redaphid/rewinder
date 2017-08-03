@@ -3,21 +3,22 @@ import PixiWrapper from '../pixi'
 import {gameTickAction} from '../actions/game'
 import {keyDownAction, keyUpAction} from '../actions/keyboard'
 import {playerCreate,playerMove,playerStop} from '../actions/player'
-
+import {thingPositionUpdate} from '../actions/things'
 export default class Game {
 
   constructor ({store}) {
     this.dispatch = store.dispatch
     this.store = store
     store.subscribe(() => this.onChange(store.getState()))
-    this.graphics = {
-
-    }
   }
 
   start = () => {
+    PIXI = PixiWrapper.getPixi()
     PixiWrapper.start()
-    this.app = PixiWrapper.getApp()
+    this.app        = PixiWrapper.getApp()
+    this.graphics   = new PIXI.Graphics()
+    this.app.stage.addChild(this.graphics)
+
     this.bindToKeyboard()
     this.dispatch(playerCreate({id: 1, position: {x: 0, y: 0}}))
 
@@ -39,10 +40,13 @@ export default class Game {
   moveThing = (thing) => {
     if(!thing.move) return
     const {move} = thing
-    if(move.up) console.log('up')
-    if(move.down) console.log('down')
-    if(move.left) console.log('left')
-    if(move.right) console.log('right')
+    const position = {}
+    if(move.up)   position.y = 1
+    if(move.down) position.y = -1
+    if(move.left) position.x = -1
+    if(move.right) position.x = 1
+    if(_.isEmpty(position)) return
+    this.dispatch(thingPositionUpdate({id: thing.id, position}))
   }
 
   onKeyUp = (key) => {
@@ -77,25 +81,16 @@ export default class Game {
   }
 
   render = () => {
+    this.graphics.clear()
     const {things} = this.store.getState().world
     _.each(things, this.renderThing)
 
   }
 
   renderThing = (thing) => {
-    const graphics  = this.graphics[thing.id] || this.createThing(thing)
-
-  }
-
-  createThing = (thing) => {
-    const PIXI      = PixiWrapper.getPixi()
-    const app       = PixiWrapper.getApp()
-    const graphics  = new PIXI.Graphics()
-    graphics.lineStyle(2, 0x0000FF, 1)
-    graphics.beginFill(0xFF700B, 1)
-    graphics.drawRect(thing.position.x, thing.position.y, 100, 100)
-    app.stage.addChild(graphics)
-    this.graphics[thing.id] = graphics
+    this.graphics.lineStyle(2, 0x0000FF, 1)
+    this.graphics.beginFill(0xFF700B, 1)
+    this.graphics.drawRect(thing.position.x, thing.position.y, 50, 100)
   }
 
   onChange = ({keyboard}) => {
