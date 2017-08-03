@@ -1,11 +1,11 @@
 import {createStore, applyMiddleware} from 'redux'
 import logger from 'redux-logger'
-import keyboardReducer from './reducers/keyboard'
+import reducer from './reducers'
 
 import Game from './models/game'
 
-const keyboardStore = createStore(keyboardReducer, applyMiddleware(logger))
+const store = createStore(reducer, applyMiddleware(logger))
 
-const game = new Game({keyboardStore})
+const game = new Game({store})
 
 game.start()

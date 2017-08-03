@@ -1,5 +1,4 @@
 import { createReducer } from 'redux-act'
-import PixiWrapper from '../pixi.js'
 import {keyDownAction, keyUpAction} from '../actions/keyboard'
 
 const initialState = {
