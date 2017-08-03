@@ -1,7 +1,8 @@
+import _ from 'lodash'
 import PixiWrapper from '../pixi'
 import {gameTickAction} from '../actions/game'
 import {keyDownAction, keyUpAction} from '../actions/keyboard'
-import {playerCreate, playerMoveUp, playerMoveDown, playerMoveLeft, playerMoveRight} from '../actions/player'
+import {playerCreate,playerMove,playerStop} from '../actions/player'
 
 export default class Game {
   constructor ({store}) {
@@ -9,11 +10,7 @@ export default class Game {
     store.subscribe(() => this.onChange(store.getState()))
   }
 
-  onChange = ({keyboard}) => {
-    if(keyboard.up) this.dispatch(playerMoveUp())
-    if(keyboard.down) this.dispatch(playerMoveDown())
-    if(keyboard.left) this.dispatch(playerMoveLeft())
-    if(keyboard.right) this.dispatch(playerMoveRight())
+  onChange = ({keyboard}) => {    
   }
 
   start = () => {
@@ -24,12 +21,38 @@ export default class Game {
   }
 
   bindToKeyboard = () => {
-    window.addEventListener('keydown', (key) => {
-      this.dispatch(keyDownAction(key))
-    })
-
-    window.addEventListener('keyup', (key) => {
-      this.dispatch(keyUpAction(key))
-    })
+    window.addEventListener('keydown', this.onKeyDown)
+    window.addEventListener('keyup', this.onKeyUp)
   }
+
+  onKeyUp = (key) => {
+    if(key.key === 'w') {
+      this.dispatch(playerMove({up: false}))
+    }
+    if(key.key === 's') {
+      this.dispatch(playerMove({down: false}))
+    }
+    if(key.key === 'a') {
+      this.dispatch(playerMove({left: false}))
+    }
+    if(key.key === 'd') {
+      this.dispatch(playerMove({right: false}))
+    }
+  }
+
+  onKeyDown = (key) => {
+    if(key.key === 'w') {
+      this.dispatch(playerMove({up: true}))
+    }
+    if(key.key === 's') {
+      this.dispatch(playerMove({down: true}))
+    }
+    if(key.key === 'a') {
+      this.dispatch(playerMove({left: true}))
+    }
+    if(key.key === 'd') {
+      this.dispatch(playerMove({right: true}))
+    }
+  }
+
 }
