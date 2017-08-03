@@ -15,11 +15,13 @@ export default createReducer({
     const newThings = {...things}
     newThings[id] = {
       position: {},
-      move: {}
+      move: {},
+      id
     }
 
     return {...state, playerId: id, things: newThings}
   },
+
   [playerMove]: (state, payload) => {
     const move      = _.get(state, `things.${state.playerId}.move`)
     const newMove   = {...move, ...payload}
