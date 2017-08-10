@@ -23,10 +23,12 @@ export default class Game {
 
     this.bindToKeyboard()
     this.app.ticker.add(this.onTick)
+    this.historicalMoves = []
     this.createPlayer()
   }
 
   createPlayer = () => {
+    this.startTime = Date.now()
     this.dispatch(playerCreate({id: UUID.v4(), position: {x: 0, y: 0}}))
   }
 
@@ -86,13 +88,36 @@ export default class Game {
   }
 
   rewind = () => {
+    const {things} = this.store.getState().history
+    let newMoves = []
+    _.each(things, ({startTime, moves}, id) => {
+      _.each(moves, (move) => {
+        const newMove = {
+          ...move,
+          time: move.time - startTime,
+          id,
+        }
+        newMoves.push(newMove)
+      })
+    })
+
+    this.historicalMoves = _.sortBy(newMoves, move => move.time * -1)
     this.createPlayer()
     this.dispatch(playerRewind())
+  }
+
+  processHistory = () => {
+    const currentTimeDelta = Date.now() - this.startTime
+    while( _.get( _.last(this.historicalMoves), 'time', currentTimeDelta) < currentTimeDelta) {
+      const nextMove = this.historicalMoves.pop()
+      this.dispatch(thingMove(nextMove))
+    }
   }
 
   onTick = () => {
     this.moveThings()
     this.render()
+    this.processHistory()
   }
 
   render = () => {
@@ -107,7 +132,7 @@ export default class Game {
     this.graphics.drawRect(thing.position.x, thing.position.y, 50, 100)
   }
 
-  onChange = ({keyboard}) => {
+  onChange = () => {
   }
 
 

@@ -13,7 +13,7 @@ export default createReducer({
     const oldThings = state.things
     const newThings = {...oldThings}
     newThings[id] = {
-      startTime: performance.now(),
+      startTime: Date.now(),
       moves: []
     }
     return {...state, playerId: id, things: newThings}
@@ -25,7 +25,7 @@ export default createReducer({
     const oldThings = state.things
     const newThings = {...oldThings}
     const playerHistory = _.clone(newThings[id].moves)
-    playerHistory.push({move, time: performance.now()})
+    playerHistory.push({move, time: Date.now()})
     newThings[id].moves = playerHistory
 
     return {...state, things: newThings}
