@@ -1,10 +1,10 @@
 import _ from 'lodash'
+import UUID from 'uuid'
+
 import PixiWrapper from '../pixi'
 import {gameTickAction} from '../actions/game'
-import {playerCreate, playerStop, playerRewind} from '../actions/player'
-import {thingMove} from '../actions/things'
-import {thingPositionUpdate} from '../actions/things'
-import UUID from 'uuid'
+import {playerCreate, playerRewind} from '../actions/player'
+import {thingMove, thingPositionUpdate} from '../actions/things'
 
 export default class Game {
 
@@ -86,6 +86,7 @@ export default class Game {
   }
 
   rewind = () => {
+    this.createPlayer()
     this.dispatch(playerRewind())
   }
 

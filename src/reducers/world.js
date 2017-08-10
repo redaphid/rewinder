@@ -30,16 +30,16 @@ export default createReducer({
     return {...state, things: newThings}
   },
 
-  [thingPositionUpdate]: (state, payload) => {
-    const position = _.get(state, `things.${state.playerId}.position`)
+  [thingPositionUpdate]: (state, {id, position}) => {
+    const oldPosition = _.get(state, `things.${id}.position`)
     const newPosition = {
-      ...position,
-      x: position.x + (payload.position.x || 0),
-      y: position.y + (payload.position.y || 0)
+      ...oldPosition,
+      x: oldPosition.x + (position.x || 0),
+      y: oldPosition.y + (position.y || 0)
     }
 
     const newThings = {...state.things}
-    _.set(newThings, `${state.playerId}.position`, newPosition)
+    _.set(newThings, `${id}.position`, newPosition)
     return {...state, things: newThings}
   }
 }, initialState)

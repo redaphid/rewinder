@@ -5,7 +5,6 @@ import {thingMove} from '../actions/things'
 
 const initialState = {
   playerId: null,
-  startTime: null,
   things: {},
 }
 
@@ -13,17 +12,21 @@ export default createReducer({
   [playerCreate]: (state, {id}) => {
     const oldThings = state.things
     const newThings = {...oldThings}
-    newThings[id] = []
-    return {...state, playerId: id, things: newThings, startTime: performance.now()}
+    newThings[id] = {
+      startTime: performance.now(),
+      moves: []
+    }
+    return {...state, playerId: id, things: newThings}
   },
+
   [thingMove]: (state, {id, move}) => {
     if(!(id === state.playerId)) return state
 
     const oldThings = state.things
     const newThings = {...oldThings}
-    const playerHistory = _.clone(newThings[id])
+    const playerHistory = _.clone(newThings[id].moves)
     playerHistory.push({move, time: performance.now()})
-    newThings[id] = playerHistory
+    newThings[id].moves = playerHistory
 
     return {...state, things: newThings}
   },
