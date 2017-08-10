@@ -1,7 +1,8 @@
 import _ from 'lodash'
 import PixiWrapper from '../pixi'
 import {gameTickAction} from '../actions/game'
-import {playerCreate,playerMove,playerStop} from '../actions/player'
+import {playerCreate, playerStop, playerRewind} from '../actions/player'
+import {thingMove} from '../actions/things'
 import {thingPositionUpdate} from '../actions/things'
 import UUID from 'uuid'
 
@@ -63,20 +64,29 @@ export default class Game {
 
   _processMove = (key, start) => {
     const currentState = this.store.getState()
+    const playerId = currentState.world.playerId
     const currentMove = _.get(currentState, `world.things.${currentState.world.playerId}.move`) || {}
 
     if(key.key === 'w' && currentMove.up != start) {
-      this.dispatch(playerMove({up: start}))
+      this.dispatch(thingMove({id: playerId, move: {up: start}}))
     }
     if(key.key === 's' && currentMove.down != start) {
-      this.dispatch(playerMove({down: start}))
+      this.dispatch(thingMove({id: playerId, move: {down: start}}))
     }
     if(key.key === 'a' && currentMove.left != start) {
-      this.dispatch(playerMove({left: start}))
+      this.dispatch(thingMove({id: playerId, move: {left: start}}))
     }
     if(key.key === 'd' && currentMove.right != start) {
-      this.dispatch(playerMove({right: start}))
+      this.dispatch(thingMove({id: playerId, move: {right: start}}))
     }
+
+    if(key.key === 'r' && start) {
+      this.rewind()
+    }
+  }
+
+  rewind = () => {
+    this.dispatch(playerRewind())
   }
 
   onTick = () => {

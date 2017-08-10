@@ -1,7 +1,7 @@
 import { createReducer } from 'redux-act'
 import _ from 'lodash'
-import {playerCreate, playerMove} from '../actions/player'
-import {thingPositionUpdate} from '../actions/things'
+import {playerCreate} from '../actions/player'
+import {thingPositionUpdate, thingMove} from '../actions/things'
 const initialState = {
   playerId: null,
   things: {
@@ -22,11 +22,11 @@ export default createReducer({
     return {...state, playerId: id, things: newThings}
   },
 
-  [playerMove]: (state, payload) => {
-    const move      = _.get(state, `things.${state.playerId}.move`)
-    const newMove   = {...move, ...payload}
+  [thingMove]: (state, {id, move}) => {
+    const oldMove      = _.get(state, `things.${id}.move`)
+    const newMove   = {...oldMove, ...move
     const newThings = {...state.things}
-    _.set(newThings, `${state.playerId}.move`, newMove)
+    _.set(newThings, `${id}.move`, newMove)
     return {...state, things: newThings}
   },
 
@@ -37,7 +37,7 @@ export default createReducer({
       x: position.x + (payload.position.x || 0),
       y: position.y + (payload.position.y || 0)
     }
-    
+
     const newThings = {...state.things}
     _.set(newThings, `${state.playerId}.position`, newPosition)
     return {...state, things: newThings}
