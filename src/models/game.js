@@ -1,9 +1,10 @@
 import _ from 'lodash'
 import PixiWrapper from '../pixi'
 import {gameTickAction} from '../actions/game'
-import {keyDownAction, keyUpAction} from '../actions/keyboard'
 import {playerCreate,playerMove,playerStop} from '../actions/player'
 import {thingPositionUpdate} from '../actions/things'
+import UUID from 'uuid'
+
 export default class Game {
 
   constructor ({store}) {
@@ -20,9 +21,12 @@ export default class Game {
     this.app.stage.addChild(this.graphics)
 
     this.bindToKeyboard()
-    this.dispatch(playerCreate({id: 1, position: {x: 0, y: 0}}))
-
     this.app.ticker.add(this.onTick)
+    this.createPlayer()
+  }
+
+  createPlayer = () => {
+    this.dispatch(playerCreate({id: UUID.v4(), position: {x: 0, y: 0}}))
   }
 
   bindToKeyboard = () => {
@@ -41,8 +45,8 @@ export default class Game {
     if(!thing.move) return
     const {move} = thing
     const position = {}
-    if(move.up)   position.y = 1
-    if(move.down) position.y = -1
+    if(move.up)   position.y = -1
+    if(move.down) position.y = 1
     if(move.left) position.x = -1
     if(move.right) position.x = 1
     if(_.isEmpty(position)) return
@@ -84,7 +88,6 @@ export default class Game {
     this.graphics.clear()
     const {things} = this.store.getState().world
     _.each(things, this.renderThing)
-
   }
 
   renderThing = (thing) => {
