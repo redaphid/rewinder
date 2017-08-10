@@ -1,6 +1,6 @@
 import { createReducer } from 'redux-act'
 import _ from 'lodash'
-import {playerCreate} from '../actions/player'
+import {playerCreate, playerRewind} from '../actions/player'
 import {thingPositionUpdate, thingMove} from '../actions/things'
 const initialState = {
   playerId: null,
@@ -41,5 +41,14 @@ export default createReducer({
     const newThings = {...state.things}
     _.set(newThings, `${id}.position`, newPosition)
     return {...state, things: newThings}
+  },
+
+  [playerRewind]: (state) => {
+    const newThings = _.mapValues(_.cloneDeep(state.things), (thing) => {
+      return {...thing, position: {x: 0, y: 0}}
+    })
+
+    return {...state, things: newThings}
   }
+
 }, initialState)

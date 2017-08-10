@@ -110,6 +110,7 @@ export default class Game {
     const currentTimeDelta = Date.now() - this.startTime
     while( _.get( _.last(this.historicalMoves), 'time', currentTimeDelta) < currentTimeDelta) {
       const nextMove = this.historicalMoves.pop()
+      console.log({nextMove})
       this.dispatch(thingMove(nextMove))
     }
   }
