@@ -24,7 +24,7 @@ export default createReducer({
 
   [thingMove]: (state, {id, move}) => {
     const oldMove      = _.get(state, `things.${id}.move`)
-    const newMove   = {...oldMove, ...move
+    const newMove   = {...oldMove, ...move}
     const newThings = {...state.things}
     _.set(newThings, `${id}.move`, newMove)
     return {...state, things: newThings}

@@ -1,6 +1,7 @@
 import { createReducer } from 'redux-act'
 import _ from 'lodash'
-import {playerCreate, playerMove} from '../actions/player'
+import {playerCreate} from '../actions/player'
+import {thingMove} from '../actions/things'
 
 const initialState = {
   playerId: null,
@@ -15,9 +16,10 @@ export default createReducer({
     newThings[id] = []
     return {...state, playerId: id, things: newThings, startTime: performance.now()}
   },
-  [playerMove]: (state, move) => {
+  [thingMove]: (state, {id, move}) => {
+    if(!(id === state.playerId)) return state
+
     const oldThings = state.things
-    const id = state.playerId
     const newThings = {...oldThings}
     const playerHistory = _.clone(newThings[id])
     playerHistory.push({move, time: performance.now()})
